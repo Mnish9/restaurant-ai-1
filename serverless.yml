@@ -1,0 +1,24 @@
+service: restaurant-ai-backend #Name of your App
+
+provider:
+  name: aws
+  runtime: nodejs18.x # Node JS version
+  memorySize: 512
+  timeout: 30
+  stage: ${opt:stage, 'development'} # serverless deploy --stage development/production
+  environment:
+    NODE_ENV: ${opt:stage, self:provider.stage, 'development'}
+  region: us-east-1 # AWS region
+
+plugins:
+  - serverless-plugin-typescript
+
+functions:
+  wallet:
+    handler: src/App.handler
+    events:
+      - http: ANY {proxy+}
+      - http: ANY /
+package:
+  include:
+    - src/**/*.ejs
